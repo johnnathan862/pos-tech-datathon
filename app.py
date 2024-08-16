@@ -43,7 +43,7 @@ student_data = data[(data['IdAluno'] == student_id) & (data['IdTurma'] == class_
 if not student_data.empty:
     st.write(f"Previsão para o IdALuno {student_id}")
     st.write(f"Probabilidade de Abandonar a turma: {student_data['ProbabilidadeDesistente'].values[0]:.2%}")
-    st.write(f"Previsão: {'Abandono' if student_data['ProbabilidadeDesistente'].values[0] >= corte else 'Não Abandono'}")
+    st.write(f"Previsão: {student_data['Classe'].values[0]}")
 
     # Plot the probability
     fig, ax = plt.subplots()
