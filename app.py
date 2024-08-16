@@ -104,10 +104,10 @@ if uploaded_file is not None:
     lst_features_numerics = [col for col in df_input.columns if col not in lst_features_categories+lst_outras_variaveis]
 
     # Selecionando variáveis para a aplicação do modelo
-    X = df_input[lst_features_categories+lst_features_numerics]
+    df_X = df_input[lst_features_categories+lst_features_numerics]
 
     # Previsões
-    df_input['ProbabilidadeAbandono'] = model.predict_proba(X)[:, 1]
+    df_input['ProbabilidadeAbandono'] = model.predict_proba(df_X)[:, 1]
     df_input['Classe'] = np.where((df_input['ProbabilidadeAbandono']*100) >= corte, "Abandono", "Não Abandono")
 
     # 

@@ -120,6 +120,7 @@ class OneHotEncoderFeatures_(BaseEstimator, TransformerMixin):
         
         # obtendo as categorias
         feature_names = ['OHE_' + str(col)  for col in self.onehot.get_feature_names_out(self.all_features)]
+        # feature_names = ['OHE_' + str(col)  for col in self.onehot.get_feature_names_out()]
         # Transformando o dataframe
         X_transformed = pd.DataFrame(
             self.onehot.transform(X[self.all_features]).toarray(),
