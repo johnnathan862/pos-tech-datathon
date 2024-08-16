@@ -76,7 +76,7 @@ if uploaded_file is not None:
     try:
         model = load(open('models/best_model_XGBoost_2024-08-16.pkl', 'rb'))
     except:
-        model = load(open(os.getcwd()+'models/best_model_XGBoost_2024-08-16.pkl', 'rb'))
+        model = load(open(os.getcwd()+'/models/best_model_XGBoost_2024-08-16.pkl', 'rb'))
 
     # Lista de variáveis a serem desconsideradas 
     lst_outras_variaveis = ['IdAluno','IdTurma','IdPeriodo','IdSerie','AnoMesRefFeatures','AnoRefFeatures','DataRefFeaturesUltDia','TargetDesistente']
