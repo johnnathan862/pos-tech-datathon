@@ -2,7 +2,7 @@ matplotlib
 numba
 numpy
 pandas
-scikit-learn==1.4.2
+scikit-learn==1.3.2
 scipy
 seaborn
 statsmodels
