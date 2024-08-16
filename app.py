@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+from pickle import load
+
 
 # Title of the app
 st.title("Probilidade de um aluno do Passos Mágicos abandonar uma turma")
@@ -61,3 +63,56 @@ if st.checkbox("Ver todas as previsões"):
 st.subheader("Download dos Resultados")
 csv = data.to_csv(index=False)
 st.download_button(label="Download CSV", data=csv, file_name='student_churn_predictions.csv', mime='text/csv')
+
+st.subheader("Upload de alunos para previsão")
+uploaded_file = st.file_uploader(
+    "Escolha o arquivo", accept_multiple_files=False
+)
+
+if uploaded_file is not None:
+    df_input = pd.read_csv(uploaded_file)
+
+    # Carregar o modelo
+    try:
+        model = load(open('models/best_model_XGBoost_2024-08-16.pkl', 'rb'))
+    except:
+        model = load(open(os.getcwd()+'models/best_model_XGBoost_2024-08-16.pkl', 'rb'))
+
+    # Lista de variáveis a serem desconsideradas 
+    lst_outras_variaveis = ['IdAluno','IdTurma','IdPeriodo','IdSerie','AnoMesRefFeatures','AnoRefFeatures','DataRefFeaturesUltDia','TargetDesistente']
+
+    # Separando as features entre numericas e categoricas
+    lst_features_categories = ['TipoTurma', 'TurnoPrincipal', 'IdDisciplina',
+        'DisciplinaRequerNota', 
+        'DisciplinaStUsaNotaConceito', 'SexoTurma', 'IdProfessor', 'Sexo',
+        'EstadoCivil', 'CorRaca', 'StDeficienciaCegueira',
+        'StDeficienciaBaixaVisao', 'StDeficienciaSurdez',
+        'StDeficienciaAuditiva', 'StDeficienciaFisica',
+        'StDeficienciaSurdoCegueira', 'StDeficienciaMultipla',
+        'StDeficienciaMental', 'StDeficienciaAutismoInfantil',
+        'StDeficienciaSindromeAsperger', 'StDeficienciaSindromeRett',
+        'StDeficienciaTrastornoDesintegrativo', 'StDeficienciaAltasHabilidades',
+        'StAppComunicacao_Sincronizado', 'StRecursoAuxilioLedor',
+        'StRecursoAuxilioTranscricao', 'StRecursoGuiaInterprete',
+        'StRecursoTradutorInterpreteDeLibras', 'StRecursoLeituraLabial',
+        'StRecursoMaterialDidaticoProvaBraille', 'StRecursoProvaAmpliada',
+        'StRecursoProvaSuperampliada', 'StRecursoCdComAudio',
+        'StRecursoLinguaPortuguesaSegundaLingua', 'StRecursoProvaEmVideo',
+        'StPermiteUsoImagem', 'StEstrangeiro', 'TipoResponsavel',
+        'GrauParentescoResponsavel']
+
+    lst_features_numerics = [col for col in df_input.columns if col not in lst_features_categories+lst_outras_variaveis]
+
+    # Selecionando variáveis para a aplicação do modelo
+    X = df_input[lst_features_categories+lst_features_numerics]
+
+    # Previsões
+    df_input['ProbabilidadeAbandono'] = model.predict_proba(X)[:, 1]
+    df_input['Classe'] = np.where((df_input['ProbabilidadeAbandono']*100) >= corte, "Abandono", "Não Abandono")
+
+    # 
+    st.write(df_input)
+
+
+# bytes_data = uploaded_file.read()
+# st.text(f"{(type(bytes_data))}")
