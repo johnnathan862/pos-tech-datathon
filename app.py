@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 from pickle import load
-
+import os
 
 # Title of the app
 st.title("Probilidade de um aluno do Passos Mágicos abandonar uma turma")
